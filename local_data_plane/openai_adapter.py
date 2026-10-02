@@ -12,6 +12,41 @@ from typing import Any
 from .daemon import InferenceDaemon
 
 MAX_BODY = 1 << 20
+DEFAULT_MAX_TOKENS = 8
+
+
+class _RequestError(ValueError):
+    """A client request field that cannot be mapped to the daemon contract."""
+
+
+def _max_tokens(payload: dict[str, Any]) -> int:
+    """Prefer ``max_completion_tokens`` and fall back to legacy ``max_tokens``."""
+    for field in ("max_completion_tokens", "max_tokens"):
+        value = payload.get(field)
+        if value is None:
+            continue
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise _RequestError(f"{field} must be an integer")
+        return value
+    return DEFAULT_MAX_TOKENS
+
+
+def _content_text(content: Any) -> str:
+    """Accept a string or an array of OpenAI text content parts."""
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content
+    if not isinstance(content, list):
+        raise _RequestError("message content must be a string or an array of text parts")
+    parts = []
+    for part in content:
+        if not isinstance(part, dict) or part.get("type") not in ("text", "input_text"):
+            raise _RequestError("only text message content parts are supported")
+        if not isinstance(part.get("text"), str):
+            raise _RequestError("text content parts require a string text field")
+        parts.append(part["text"])
+    return "".join(parts)
 
 
 class OpenAIAdapter:
@@ -82,12 +117,19 @@ class OpenAIAdapter:
             messages = payload.get("messages", [])
             if not isinstance(messages, list) or not messages:
                 return self._json(400, {"error": {"message": "messages is required"}})
-            prompt = str(messages[-1].get("content", "")) if isinstance(messages[-1], dict) else ""
+            try:
+                prompt = _content_text(messages[-1].get("content")) if isinstance(messages[-1], dict) else ""
+            except _RequestError as exc:
+                return self._json(400, {"error": {"message": str(exc)}})
+        try:
+            max_tokens = _max_tokens(payload)
+        except _RequestError as exc:
+            return self._json(400, {"error": {"message": str(exc)}})
         self._request_id += 1
         request = {"method": "generate", "handle_id": active["handle_id"],
                    "backend": str(payload.get("backend", active.get("backend", "fixture"))),
                    "prompt": str(prompt),
-                   "max_tokens": int(payload.get("max_tokens", 8)),
+                   "max_tokens": max_tokens,
                    "profile": str(payload.get("profile", "resident"))}
         events = self.daemon.handle(request, self._request_id)
         terminal = events[-1][1]
