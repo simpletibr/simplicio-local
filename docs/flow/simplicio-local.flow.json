@@ -1,0 +1,426 @@
+{
+  "$schema": "simplicio.flow/v1",
+  "schema": "simplicio.flow/v1",
+  "name": "simplicio-local",
+  "version": "0.1.53",
+  "description": "Fluxo declarativo end-to-end do simplicio-local: entrada -> passos -> saídas",
+  "inputs": [
+    {
+      "id": "in_mapper_cli",
+      "label": "CLI: llm-project-mapper (Scaffolding & Templates)",
+      "kind": "input",
+      "source": {
+        "file": "bin/cli.js",
+        "line": 411,
+        "symbol": "printHelp"
+      }
+    },
+    {
+      "id": "in_us4_cli",
+      "label": "CLI: us4-cli (Runtime & Tools Wrapper)",
+      "kind": "input",
+      "source": {
+        "file": "bin/us4-cli.js",
+        "line": 101,
+        "symbol": "printHelp"
+      }
+    },
+    {
+      "id": "in_openai_http",
+      "label": "HTTP: OpenAI Server API (/v1/chat/completions, /v1/embeddings)",
+      "kind": "input",
+      "source": {
+        "file": "scripts/openai_serve.py",
+        "line": 437,
+        "symbol": "do_POST"
+      }
+    },
+    {
+      "id": "in_health_http",
+      "label": "HTTP: Health & Models API (/health, /v1/models)",
+      "kind": "input",
+      "source": {
+        "file": "scripts/openai_serve.py",
+        "line": 409,
+        "symbol": "do_GET"
+      }
+    },
+    {
+      "id": "in_model_weights",
+      "label": "File: Safetensors / GGUF Model Weights",
+      "kind": "input",
+      "source": {
+        "file": "local_data_plane/model_resolver.py",
+        "line": 154,
+        "symbol": "resolve_model"
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "step_admission",
+      "label": "Runtime Admission & Policy Lease Gate",
+      "kind": "step",
+      "source": {
+        "file": "bin/us4-cli.js",
+        "line": 13,
+        "symbol": "hasRuntimeAdmission"
+      }
+    },
+    {
+      "id": "step_probe_topology",
+      "label": "Hardware Topology & ISA Detection (AVX2, NEON, AMX, ANE)",
+      "kind": "step",
+      "source": {
+        "file": "local_data_plane/hardware_topology.py",
+        "line": 96,
+        "symbol": "detect_hardware_topology"
+      }
+    },
+    {
+      "id": "step_scaffold_detect",
+      "label": "Scaffolding Stack Detection & Template Copy",
+      "kind": "step",
+      "source": {
+        "file": "bin/cli.js",
+        "line": 501,
+        "symbol": "detectStack"
+      }
+    },
+    {
+      "id": "step_doctor_diag",
+      "label": "Host Doctor & Hardware Diagnostics",
+      "kind": "step",
+      "source": {
+        "file": "engine/c/doctor.py",
+        "line": 186,
+        "symbol": "main"
+      }
+    },
+    {
+      "id": "step_resource_plan",
+      "label": "Resource Planner & RSS Ceiling Check",
+      "kind": "step",
+      "source": {
+        "file": "engine/c/resource_plan.py",
+        "line": 108,
+        "symbol": "build_plan"
+      }
+    },
+    {
+      "id": "step_model_verify",
+      "label": "Model Resolver & Artifact Verification",
+      "kind": "step",
+      "source": {
+        "file": "local_data_plane/model_resolver.py",
+        "line": 100,
+        "symbol": "ModelResolver"
+      }
+    },
+    {
+      "id": "step_layout_packing",
+      "label": "Weight Packing & Cache-Aware Tiling",
+      "kind": "step",
+      "source": {
+        "file": "local_data_plane/layout_packing.py",
+        "line": 121,
+        "symbol": "pack_int8_rhs"
+      }
+    },
+    {
+      "id": "step_batching",
+      "label": "Isolated Continuous Batching & KV Management",
+      "kind": "step",
+      "source": {
+        "file": "local_data_plane/layout_packing.py",
+        "line": 260,
+        "symbol": "form_isolated_batch"
+      }
+    },
+    {
+      "id": "step_autotuner",
+      "label": "Bounded Autotuner & Physical Kernel Selector",
+      "kind": "step",
+      "source": {
+        "file": "local_data_plane/kernel_dispatch.py",
+        "line": 142,
+        "symbol": "run_bounded_autotune"
+      }
+    },
+    {
+      "id": "step_inference_exec",
+      "label": "Engine Inference Execution (C Engine / MLX / Metal)",
+      "kind": "step",
+      "source": {
+        "file": "scripts/openai_serve.py",
+        "line": 296,
+        "symbol": "_proxy_upstream"
+      }
+    },
+    {
+      "id": "step_embeddings_exec",
+      "label": "In-Process Embeddings Generation",
+      "kind": "step",
+      "source": {
+        "file": "scripts/openai_serve.py",
+        "line": 358,
+        "symbol": "_handle_embeddings"
+      }
+    },
+    {
+      "id": "step_simd_gates",
+      "label": "SIMD Correctness & Differential Release Gate",
+      "kind": "step",
+      "source": {
+        "file": "local_data_plane/simd_validation.py",
+        "line": 102,
+        "symbol": "evaluate_release_gate"
+      }
+    },
+    {
+      "id": "step_telemetry",
+      "label": "Telemetry Collection & Immutable Receipt Builder",
+      "kind": "step",
+      "source": {
+        "file": "local_data_plane/telemetry.py",
+        "line": 71,
+        "symbol": "ReceiptBuilder"
+      }
+    },
+    {
+      "id": "store_model_cache",
+      "label": "Packed Weights & Model Cache Directory",
+      "kind": "store",
+      "source": {
+        "file": "local_data_plane/layout_packing.py",
+        "line": 146,
+        "symbol": "AtomicPackedCache"
+      }
+    },
+    {
+      "id": "store_tuning_cache",
+      "label": "Hardware-Tuning Persistent Key Cache",
+      "kind": "store",
+      "source": {
+        "file": "local_data_plane/kernel_dispatch.py",
+        "line": 81,
+        "symbol": "PersistentTuningCache"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "in_mapper_cli",
+      "to": "step_scaffold_detect",
+      "label": "scaffold flags",
+      "evidence": "bin/cli.js:450"
+    },
+    {
+      "from": "step_scaffold_detect",
+      "to": "out_scaffold_files",
+      "label": "emit files",
+      "evidence": "bin/cli.js:640"
+    },
+    {
+      "from": "in_us4_cli",
+      "to": "step_admission",
+      "label": "command dispatch",
+      "evidence": "bin/us4-cli.js:20"
+    },
+    {
+      "from": "step_admission",
+      "to": "step_probe_topology",
+      "label": "probe",
+      "evidence": "bin/us4-cli.js:254"
+    },
+    {
+      "from": "step_admission",
+      "to": "step_doctor_diag",
+      "label": "doctor",
+      "evidence": "bin/us4-cli.js:239"
+    },
+    {
+      "from": "step_admission",
+      "to": "step_resource_plan",
+      "label": "plan",
+      "evidence": "bin/us4-cli.js:242"
+    },
+    {
+      "from": "step_probe_topology",
+      "to": "out_cli_report",
+      "label": "print hardware",
+      "evidence": "bin/cli.js:355"
+    },
+    {
+      "from": "step_doctor_diag",
+      "to": "out_cli_report",
+      "label": "print diagnostics",
+      "evidence": "engine/c/doctor.py:186"
+    },
+    {
+      "from": "step_resource_plan",
+      "to": "out_cli_report",
+      "label": "print plan",
+      "evidence": "engine/c/resource_plan.py:250"
+    },
+    {
+      "from": "in_openai_http",
+      "to": "step_admission",
+      "label": "POST /v1/*",
+      "evidence": "scripts/openai_serve.py:437"
+    },
+    {
+      "from": "in_health_http",
+      "to": "out_openai_resp",
+      "label": "GET /health",
+      "evidence": "scripts/openai_serve.py:410"
+    },
+    {
+      "from": "step_admission",
+      "to": "step_model_verify",
+      "label": "verify lease",
+      "evidence": "scripts/openai_serve.py:120"
+    },
+    {
+      "from": "in_model_weights",
+      "to": "step_model_verify",
+      "label": "weights path",
+      "evidence": "local_data_plane/model_resolver.py:154"
+    },
+    {
+      "from": "step_model_verify",
+      "to": "step_layout_packing",
+      "label": "quant tensors",
+      "evidence": "local_data_plane/layout_packing.py:121"
+    },
+    {
+      "from": "step_layout_packing",
+      "to": "store_model_cache",
+      "label": "cache packed",
+      "evidence": "local_data_plane/layout_packing.py:150"
+    },
+    {
+      "from": "step_layout_packing",
+      "to": "step_batching",
+      "label": "packed tiles",
+      "evidence": "local_data_plane/layout_packing.py:207"
+    },
+    {
+      "from": "step_probe_topology",
+      "to": "step_autotuner",
+      "label": "detected ISA",
+      "evidence": "local_data_plane/hardware_topology.py:96"
+    },
+    {
+      "from": "store_tuning_cache",
+      "to": "step_autotuner",
+      "label": "read key",
+      "evidence": "local_data_plane/kernel_dispatch.py:90"
+    },
+    {
+      "from": "step_autotuner",
+      "to": "step_inference_exec",
+      "label": "selected kernel",
+      "evidence": "local_data_plane/kernel_dispatch.py:186"
+    },
+    {
+      "from": "step_batching",
+      "to": "step_inference_exec",
+      "label": "batch queue",
+      "evidence": "local_data_plane/layout_packing.py:260"
+    },
+    {
+      "from": "step_admission",
+      "to": "step_embeddings_exec",
+      "label": "embed text",
+      "evidence": "scripts/openai_serve.py:358"
+    },
+    {
+      "from": "step_embeddings_exec",
+      "to": "out_embeddings",
+      "label": "vectors",
+      "evidence": "scripts/openai_serve.py:390"
+    },
+    {
+      "from": "step_inference_exec",
+      "to": "step_simd_gates",
+      "label": "output logits",
+      "evidence": "local_data_plane/simd_validation.py:59"
+    },
+    {
+      "from": "step_simd_gates",
+      "to": "step_telemetry",
+      "label": "gate outcome",
+      "evidence": "local_data_plane/simd_validation.py:133"
+    },
+    {
+      "from": "step_telemetry",
+      "to": "out_receipts",
+      "label": "emit receipt",
+      "evidence": "local_data_plane/telemetry.py:71"
+    },
+    {
+      "from": "step_inference_exec",
+      "to": "out_openai_resp",
+      "label": "stream tokens",
+      "evidence": "scripts/openai_serve.py:328"
+    }
+  ],
+  "outputs": [
+    {
+      "id": "out_scaffold_files",
+      "label": "Scaffolded Project Specs & Starter Files",
+      "kind": "output",
+      "source": {
+        "file": "bin/cli.js",
+        "line": 606,
+        "symbol": "copyTemplate"
+      }
+    },
+    {
+      "id": "out_cli_report",
+      "label": "CLI Terminal Output & Diagnostics Report",
+      "kind": "output",
+      "source": {
+        "file": "bin/us4-cli.js",
+        "line": 192,
+        "symbol": "runNative"
+      }
+    },
+    {
+      "id": "out_openai_resp",
+      "label": "OpenAI API JSON & SSE Streaming Tokens",
+      "kind": "output",
+      "source": {
+        "file": "scripts/openai_serve.py",
+        "line": 296,
+        "symbol": "_proxy_upstream"
+      }
+    },
+    {
+      "id": "out_embeddings",
+      "label": "Embedding Vectors JSON Response",
+      "kind": "output",
+      "source": {
+        "file": "scripts/openai_serve.py",
+        "line": 358,
+        "symbol": "_handle_embeddings"
+      }
+    },
+    {
+      "id": "out_receipts",
+      "label": "SIMD Release Receipts & Tuning Cache",
+      "kind": "output",
+      "source": {
+        "file": "local_data_plane/simd_validation.py",
+        "line": 133,
+        "symbol": "build_simd_receipt"
+      }
+    }
+  ],
+  "generation": {
+    "generator": "scripts/generate_flow.py",
+    "contract": "simplicio.flow/v1",
+    "deterministic": true
+  }
+}

@@ -77,6 +77,22 @@ tests, docs, screenshots"]
 delivery loop"]
 ```
 
+## Project Flow (End-to-End)
+
+Complete declarative execution pipeline (`simplicio.flow/v1`), mapping all inputs, SIMD kernels, caches, and outputs:
+
+<p align="center">
+  <img src="docs/flow/simplicio-local.svg" alt="Simplicio Local Flow" width="860" />
+</p>
+
+Regenerate and test flow artifacts locally:
+
+```bash
+npm run flow
+# or: python3 scripts/generate_flow.py
+npm run test:flow
+```
+
 ## Proof and validation
 
 - Changelog tracks CMake project version and starter package version separately.
