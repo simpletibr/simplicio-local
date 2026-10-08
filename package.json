@@ -69,10 +69,12 @@
     "@playwright/test": "^1.60.0"
   },
   "scripts": {
-    "lint": "node --check bin/cli.js && node --check bin/us4-cli.js && node --check test/run-tests.js && node --check test/cli.test.js && node --check test/us4-cli.test.js",
+    "lint": "node --check bin/cli.js && node --check bin/us4-cli.js && node --check test/run-tests.js && node --check test/cli.test.js && node --check test/us4-cli.test.js && node --check test/flow.test.js",
     "test": "node test/run-tests.js",
     "test:e2e": "npx playwright test",
     "test:cli": "node bin/cli.js --help",
+    "flow": "python3 scripts/generate_flow.py",
+    "test:flow": "python3 -m unittest tests/test_flow_drift.py",
     "pack:dry": "npm pack --dry-run",
     "release": "npm publish --access public"
   }

@@ -1,0 +1,71 @@
+%% Auto-generated deterministic Mermaid flow for simplicio-local (simplicio.flow/v1)
+flowchart TD
+    classDef inputStyle fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1;
+    classDef stepStyle fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a;
+    classDef storeStyle fill:#fef3c7,stroke:#d97706,stroke-width:1.5px,color:#92400e;
+    classDef outputStyle fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#15803d;
+
+    subgraph Inputs ["Entradas"]
+        in_health_http["HTTP: Health & Models API (/health, /v1/models)"]:::inputStyle
+        in_mapper_cli["CLI: llm-project-mapper (Scaffolding & Templates)"]:::inputStyle
+        in_model_weights["File: Safetensors / GGUF Model Weights"]:::inputStyle
+        in_openai_http["HTTP: OpenAI Server API (/v1/chat/completions, /v1/embeddings)"]:::inputStyle
+        in_us4_cli["CLI: us4-cli (Runtime & Tools Wrapper)"]:::inputStyle
+    end
+
+    subgraph Steps ["Processamento e Aceleração SIMD"]
+        step_admission["Runtime Admission & Policy Lease Gate"]:::stepStyle
+        step_autotuner["Bounded Autotuner & Physical Kernel Selector"]:::stepStyle
+        step_batching["Isolated Continuous Batching & KV Management"]:::stepStyle
+        step_doctor_diag["Host Doctor & Hardware Diagnostics"]:::stepStyle
+        step_embeddings_exec["In-Process Embeddings Generation"]:::stepStyle
+        step_inference_exec["Engine Inference Execution (C Engine / MLX / Metal)"]:::stepStyle
+        step_layout_packing["Weight Packing & Cache-Aware Tiling"]:::stepStyle
+        step_model_verify["Model Resolver & Artifact Verification"]:::stepStyle
+        step_probe_topology["Hardware Topology & ISA Detection (AVX2, NEON, AMX, ANE)"]:::stepStyle
+        step_resource_plan["Resource Planner & RSS Ceiling Check"]:::stepStyle
+        step_scaffold_detect["Scaffolding Stack Detection & Template Copy"]:::stepStyle
+        step_simd_gates["SIMD Correctness & Differential Release Gate"]:::stepStyle
+        step_telemetry["Telemetry Collection & Immutable Receipt Builder"]:::stepStyle
+    end
+
+    subgraph Stores ["Armazenamento e Cache"]
+        store_model_cache[("Packed Weights & Model Cache Directory")]:::storeStyle
+        store_tuning_cache[("Hardware-Tuning Persistent Key Cache")]:::storeStyle
+    end
+
+    subgraph Outputs ["Saídas"]
+        out_cli_report["CLI Terminal Output & Diagnostics Report"]:::outputStyle
+        out_embeddings["Embedding Vectors JSON Response"]:::outputStyle
+        out_openai_resp["OpenAI API JSON & SSE Streaming Tokens"]:::outputStyle
+        out_receipts["SIMD Release Receipts & Tuning Cache"]:::outputStyle
+        out_scaffold_files["Scaffolded Project Specs & Starter Files"]:::outputStyle
+    end
+
+    %% Conexões determinísticas
+    in_health_http -->|"GET /health"| out_openai_resp
+    in_mapper_cli -->|"scaffold flags"| step_scaffold_detect
+    in_model_weights -->|"weights path"| step_model_verify
+    in_openai_http -->|"POST /v1/*"| step_admission
+    in_us4_cli -->|"command dispatch"| step_admission
+    step_admission -->|"doctor"| step_doctor_diag
+    step_admission -->|"embed text"| step_embeddings_exec
+    step_admission -->|"verify lease"| step_model_verify
+    step_admission -->|"probe"| step_probe_topology
+    step_admission -->|"plan"| step_resource_plan
+    step_autotuner -->|"selected kernel"| step_inference_exec
+    step_batching -->|"batch queue"| step_inference_exec
+    step_doctor_diag -->|"print diagnostics"| out_cli_report
+    step_embeddings_exec -->|"vectors"| out_embeddings
+    step_inference_exec -->|"stream tokens"| out_openai_resp
+    step_inference_exec -->|"output logits"| step_simd_gates
+    step_layout_packing -->|"packed tiles"| step_batching
+    step_layout_packing -->|"cache packed"| store_model_cache
+    step_model_verify -->|"quant tensors"| step_layout_packing
+    step_probe_topology -->|"print hardware"| out_cli_report
+    step_probe_topology -->|"detected ISA"| step_autotuner
+    step_resource_plan -->|"print plan"| out_cli_report
+    step_scaffold_detect -->|"emit files"| out_scaffold_files
+    step_simd_gates -->|"gate outcome"| step_telemetry
+    step_telemetry -->|"emit receipt"| out_receipts
+    store_tuning_cache -->|"read key"| step_autotuner

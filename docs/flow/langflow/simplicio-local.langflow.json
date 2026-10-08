@@ -1,0 +1,1099 @@
+{
+  "name": "simplicio-local",
+  "description": "Fluxo declarativo end-to-end do simplicio-local: entrada -> passos -> saídas",
+  "data": {
+    "nodes": [
+      {
+        "id": "in_health_http",
+        "type": "genericNode",
+        "position": {
+          "x": 50,
+          "y": 50
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "in_health_http",
+          "node": {
+            "display_name": "HTTP: Health & Models API (/health, /v1/models)",
+            "description": "Source: scripts/openai_serve.py:409",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "input"
+              },
+              "file": {
+                "type": "str",
+                "value": "scripts/openai_serve.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 409
+              },
+              "symbol": {
+                "type": "str",
+                "value": "do_GET"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "in_mapper_cli",
+        "type": "genericNode",
+        "position": {
+          "x": 50,
+          "y": 190
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "in_mapper_cli",
+          "node": {
+            "display_name": "CLI: llm-project-mapper (Scaffolding & Templates)",
+            "description": "Source: bin/cli.js:411",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "input"
+              },
+              "file": {
+                "type": "str",
+                "value": "bin/cli.js"
+              },
+              "line": {
+                "type": "int",
+                "value": 411
+              },
+              "symbol": {
+                "type": "str",
+                "value": "printHelp"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "in_model_weights",
+        "type": "genericNode",
+        "position": {
+          "x": 50,
+          "y": 330
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "in_model_weights",
+          "node": {
+            "display_name": "File: Safetensors / GGUF Model Weights",
+            "description": "Source: local_data_plane/model_resolver.py:154",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "input"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/model_resolver.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 154
+              },
+              "symbol": {
+                "type": "str",
+                "value": "resolve_model"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "in_openai_http",
+        "type": "genericNode",
+        "position": {
+          "x": 50,
+          "y": 470
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "in_openai_http",
+          "node": {
+            "display_name": "HTTP: OpenAI Server API (/v1/chat/completions, /v1/embeddings)",
+            "description": "Source: scripts/openai_serve.py:437",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "input"
+              },
+              "file": {
+                "type": "str",
+                "value": "scripts/openai_serve.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 437
+              },
+              "symbol": {
+                "type": "str",
+                "value": "do_POST"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "in_us4_cli",
+        "type": "genericNode",
+        "position": {
+          "x": 50,
+          "y": 610
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "in_us4_cli",
+          "node": {
+            "display_name": "CLI: us4-cli (Runtime & Tools Wrapper)",
+            "description": "Source: bin/us4-cli.js:101",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "input"
+              },
+              "file": {
+                "type": "str",
+                "value": "bin/us4-cli.js"
+              },
+              "line": {
+                "type": "int",
+                "value": 101
+              },
+              "symbol": {
+                "type": "str",
+                "value": "printHelp"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "out_cli_report",
+        "type": "genericNode",
+        "position": {
+          "x": 1250,
+          "y": 50
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "out_cli_report",
+          "node": {
+            "display_name": "CLI Terminal Output & Diagnostics Report",
+            "description": "Source: bin/us4-cli.js:192",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "output"
+              },
+              "file": {
+                "type": "str",
+                "value": "bin/us4-cli.js"
+              },
+              "line": {
+                "type": "int",
+                "value": 192
+              },
+              "symbol": {
+                "type": "str",
+                "value": "runNative"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "out_embeddings",
+        "type": "genericNode",
+        "position": {
+          "x": 1250,
+          "y": 190
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "out_embeddings",
+          "node": {
+            "display_name": "Embedding Vectors JSON Response",
+            "description": "Source: scripts/openai_serve.py:358",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "output"
+              },
+              "file": {
+                "type": "str",
+                "value": "scripts/openai_serve.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 358
+              },
+              "symbol": {
+                "type": "str",
+                "value": "_handle_embeddings"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "out_openai_resp",
+        "type": "genericNode",
+        "position": {
+          "x": 1250,
+          "y": 330
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "out_openai_resp",
+          "node": {
+            "display_name": "OpenAI API JSON & SSE Streaming Tokens",
+            "description": "Source: scripts/openai_serve.py:296",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "output"
+              },
+              "file": {
+                "type": "str",
+                "value": "scripts/openai_serve.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 296
+              },
+              "symbol": {
+                "type": "str",
+                "value": "_proxy_upstream"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "out_receipts",
+        "type": "genericNode",
+        "position": {
+          "x": 1250,
+          "y": 470
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "out_receipts",
+          "node": {
+            "display_name": "SIMD Release Receipts & Tuning Cache",
+            "description": "Source: local_data_plane/simd_validation.py:133",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "output"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/simd_validation.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 133
+              },
+              "symbol": {
+                "type": "str",
+                "value": "build_simd_receipt"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "out_scaffold_files",
+        "type": "genericNode",
+        "position": {
+          "x": 1250,
+          "y": 610
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "out_scaffold_files",
+          "node": {
+            "display_name": "Scaffolded Project Specs & Starter Files",
+            "description": "Source: bin/cli.js:606",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "output"
+              },
+              "file": {
+                "type": "str",
+                "value": "bin/cli.js"
+              },
+              "line": {
+                "type": "int",
+                "value": 606
+              },
+              "symbol": {
+                "type": "str",
+                "value": "copyTemplate"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_admission",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 50
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_admission",
+          "node": {
+            "display_name": "Runtime Admission & Policy Lease Gate",
+            "description": "Source: bin/us4-cli.js:13",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "bin/us4-cli.js"
+              },
+              "line": {
+                "type": "int",
+                "value": 13
+              },
+              "symbol": {
+                "type": "str",
+                "value": "hasRuntimeAdmission"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_autotuner",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 190
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_autotuner",
+          "node": {
+            "display_name": "Bounded Autotuner & Physical Kernel Selector",
+            "description": "Source: local_data_plane/kernel_dispatch.py:142",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/kernel_dispatch.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 142
+              },
+              "symbol": {
+                "type": "str",
+                "value": "run_bounded_autotune"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_batching",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 330
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_batching",
+          "node": {
+            "display_name": "Isolated Continuous Batching & KV Management",
+            "description": "Source: local_data_plane/layout_packing.py:260",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/layout_packing.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 260
+              },
+              "symbol": {
+                "type": "str",
+                "value": "form_isolated_batch"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_doctor_diag",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 470
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_doctor_diag",
+          "node": {
+            "display_name": "Host Doctor & Hardware Diagnostics",
+            "description": "Source: engine/c/doctor.py:186",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "engine/c/doctor.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 186
+              },
+              "symbol": {
+                "type": "str",
+                "value": "main"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_embeddings_exec",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 610
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_embeddings_exec",
+          "node": {
+            "display_name": "In-Process Embeddings Generation",
+            "description": "Source: scripts/openai_serve.py:358",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "scripts/openai_serve.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 358
+              },
+              "symbol": {
+                "type": "str",
+                "value": "_handle_embeddings"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_inference_exec",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 750
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_inference_exec",
+          "node": {
+            "display_name": "Engine Inference Execution (C Engine / MLX / Metal)",
+            "description": "Source: scripts/openai_serve.py:296",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "scripts/openai_serve.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 296
+              },
+              "symbol": {
+                "type": "str",
+                "value": "_proxy_upstream"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_layout_packing",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 890
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_layout_packing",
+          "node": {
+            "display_name": "Weight Packing & Cache-Aware Tiling",
+            "description": "Source: local_data_plane/layout_packing.py:121",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/layout_packing.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 121
+              },
+              "symbol": {
+                "type": "str",
+                "value": "pack_int8_rhs"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_model_verify",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 1030
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_model_verify",
+          "node": {
+            "display_name": "Model Resolver & Artifact Verification",
+            "description": "Source: local_data_plane/model_resolver.py:100",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/model_resolver.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 100
+              },
+              "symbol": {
+                "type": "str",
+                "value": "ModelResolver"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_probe_topology",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 1170
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_probe_topology",
+          "node": {
+            "display_name": "Hardware Topology & ISA Detection (AVX2, NEON, AMX, ANE)",
+            "description": "Source: local_data_plane/hardware_topology.py:96",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/hardware_topology.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 96
+              },
+              "symbol": {
+                "type": "str",
+                "value": "detect_hardware_topology"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_resource_plan",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 1310
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_resource_plan",
+          "node": {
+            "display_name": "Resource Planner & RSS Ceiling Check",
+            "description": "Source: engine/c/resource_plan.py:108",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "engine/c/resource_plan.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 108
+              },
+              "symbol": {
+                "type": "str",
+                "value": "build_plan"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_scaffold_detect",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 1450
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_scaffold_detect",
+          "node": {
+            "display_name": "Scaffolding Stack Detection & Template Copy",
+            "description": "Source: bin/cli.js:501",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "bin/cli.js"
+              },
+              "line": {
+                "type": "int",
+                "value": 501
+              },
+              "symbol": {
+                "type": "str",
+                "value": "detectStack"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_simd_gates",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 1590
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_simd_gates",
+          "node": {
+            "display_name": "SIMD Correctness & Differential Release Gate",
+            "description": "Source: local_data_plane/simd_validation.py:102",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/simd_validation.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 102
+              },
+              "symbol": {
+                "type": "str",
+                "value": "evaluate_release_gate"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "step_telemetry",
+        "type": "genericNode",
+        "position": {
+          "x": 450,
+          "y": 1730
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "step_telemetry",
+          "node": {
+            "display_name": "Telemetry Collection & Immutable Receipt Builder",
+            "description": "Source: local_data_plane/telemetry.py:71",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "step"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/telemetry.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 71
+              },
+              "symbol": {
+                "type": "str",
+                "value": "ReceiptBuilder"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "store_model_cache",
+        "type": "genericNode",
+        "position": {
+          "x": 850,
+          "y": 50
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "store_model_cache",
+          "node": {
+            "display_name": "Packed Weights & Model Cache Directory",
+            "description": "Source: local_data_plane/layout_packing.py:146",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "store"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/layout_packing.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 146
+              },
+              "symbol": {
+                "type": "str",
+                "value": "AtomicPackedCache"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "store_tuning_cache",
+        "type": "genericNode",
+        "position": {
+          "x": 850,
+          "y": 190
+        },
+        "data": {
+          "type": "CustomComponent",
+          "id": "store_tuning_cache",
+          "node": {
+            "display_name": "Hardware-Tuning Persistent Key Cache",
+            "description": "Source: local_data_plane/kernel_dispatch.py:81",
+            "template": {
+              "kind": {
+                "type": "str",
+                "value": "store"
+              },
+              "file": {
+                "type": "str",
+                "value": "local_data_plane/kernel_dispatch.py"
+              },
+              "line": {
+                "type": "int",
+                "value": 81
+              },
+              "symbol": {
+                "type": "str",
+                "value": "PersistentTuningCache"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge_0_in_health_http_out_openai_resp",
+        "source": "in_health_http",
+        "target": "out_openai_resp",
+        "data": {
+          "label": "GET /health",
+          "evidence": "scripts/openai_serve.py:410"
+        }
+      },
+      {
+        "id": "edge_1_in_mapper_cli_step_scaffold_detect",
+        "source": "in_mapper_cli",
+        "target": "step_scaffold_detect",
+        "data": {
+          "label": "scaffold flags",
+          "evidence": "bin/cli.js:450"
+        }
+      },
+      {
+        "id": "edge_2_in_model_weights_step_model_verify",
+        "source": "in_model_weights",
+        "target": "step_model_verify",
+        "data": {
+          "label": "weights path",
+          "evidence": "local_data_plane/model_resolver.py:154"
+        }
+      },
+      {
+        "id": "edge_3_in_openai_http_step_admission",
+        "source": "in_openai_http",
+        "target": "step_admission",
+        "data": {
+          "label": "POST /v1/*",
+          "evidence": "scripts/openai_serve.py:437"
+        }
+      },
+      {
+        "id": "edge_4_in_us4_cli_step_admission",
+        "source": "in_us4_cli",
+        "target": "step_admission",
+        "data": {
+          "label": "command dispatch",
+          "evidence": "bin/us4-cli.js:20"
+        }
+      },
+      {
+        "id": "edge_5_step_admission_step_doctor_diag",
+        "source": "step_admission",
+        "target": "step_doctor_diag",
+        "data": {
+          "label": "doctor",
+          "evidence": "bin/us4-cli.js:239"
+        }
+      },
+      {
+        "id": "edge_6_step_admission_step_embeddings_exec",
+        "source": "step_admission",
+        "target": "step_embeddings_exec",
+        "data": {
+          "label": "embed text",
+          "evidence": "scripts/openai_serve.py:358"
+        }
+      },
+      {
+        "id": "edge_7_step_admission_step_model_verify",
+        "source": "step_admission",
+        "target": "step_model_verify",
+        "data": {
+          "label": "verify lease",
+          "evidence": "scripts/openai_serve.py:120"
+        }
+      },
+      {
+        "id": "edge_8_step_admission_step_probe_topology",
+        "source": "step_admission",
+        "target": "step_probe_topology",
+        "data": {
+          "label": "probe",
+          "evidence": "bin/us4-cli.js:254"
+        }
+      },
+      {
+        "id": "edge_9_step_admission_step_resource_plan",
+        "source": "step_admission",
+        "target": "step_resource_plan",
+        "data": {
+          "label": "plan",
+          "evidence": "bin/us4-cli.js:242"
+        }
+      },
+      {
+        "id": "edge_10_step_autotuner_step_inference_exec",
+        "source": "step_autotuner",
+        "target": "step_inference_exec",
+        "data": {
+          "label": "selected kernel",
+          "evidence": "local_data_plane/kernel_dispatch.py:186"
+        }
+      },
+      {
+        "id": "edge_11_step_batching_step_inference_exec",
+        "source": "step_batching",
+        "target": "step_inference_exec",
+        "data": {
+          "label": "batch queue",
+          "evidence": "local_data_plane/layout_packing.py:260"
+        }
+      },
+      {
+        "id": "edge_12_step_doctor_diag_out_cli_report",
+        "source": "step_doctor_diag",
+        "target": "out_cli_report",
+        "data": {
+          "label": "print diagnostics",
+          "evidence": "engine/c/doctor.py:186"
+        }
+      },
+      {
+        "id": "edge_13_step_embeddings_exec_out_embeddings",
+        "source": "step_embeddings_exec",
+        "target": "out_embeddings",
+        "data": {
+          "label": "vectors",
+          "evidence": "scripts/openai_serve.py:390"
+        }
+      },
+      {
+        "id": "edge_14_step_inference_exec_out_openai_resp",
+        "source": "step_inference_exec",
+        "target": "out_openai_resp",
+        "data": {
+          "label": "stream tokens",
+          "evidence": "scripts/openai_serve.py:328"
+        }
+      },
+      {
+        "id": "edge_15_step_inference_exec_step_simd_gates",
+        "source": "step_inference_exec",
+        "target": "step_simd_gates",
+        "data": {
+          "label": "output logits",
+          "evidence": "local_data_plane/simd_validation.py:59"
+        }
+      },
+      {
+        "id": "edge_16_step_layout_packing_step_batching",
+        "source": "step_layout_packing",
+        "target": "step_batching",
+        "data": {
+          "label": "packed tiles",
+          "evidence": "local_data_plane/layout_packing.py:207"
+        }
+      },
+      {
+        "id": "edge_17_step_layout_packing_store_model_cache",
+        "source": "step_layout_packing",
+        "target": "store_model_cache",
+        "data": {
+          "label": "cache packed",
+          "evidence": "local_data_plane/layout_packing.py:150"
+        }
+      },
+      {
+        "id": "edge_18_step_model_verify_step_layout_packing",
+        "source": "step_model_verify",
+        "target": "step_layout_packing",
+        "data": {
+          "label": "quant tensors",
+          "evidence": "local_data_plane/layout_packing.py:121"
+        }
+      },
+      {
+        "id": "edge_19_step_probe_topology_out_cli_report",
+        "source": "step_probe_topology",
+        "target": "out_cli_report",
+        "data": {
+          "label": "print hardware",
+          "evidence": "bin/cli.js:355"
+        }
+      },
+      {
+        "id": "edge_20_step_probe_topology_step_autotuner",
+        "source": "step_probe_topology",
+        "target": "step_autotuner",
+        "data": {
+          "label": "detected ISA",
+          "evidence": "local_data_plane/hardware_topology.py:96"
+        }
+      },
+      {
+        "id": "edge_21_step_resource_plan_out_cli_report",
+        "source": "step_resource_plan",
+        "target": "out_cli_report",
+        "data": {
+          "label": "print plan",
+          "evidence": "engine/c/resource_plan.py:250"
+        }
+      },
+      {
+        "id": "edge_22_step_scaffold_detect_out_scaffold_files",
+        "source": "step_scaffold_detect",
+        "target": "out_scaffold_files",
+        "data": {
+          "label": "emit files",
+          "evidence": "bin/cli.js:640"
+        }
+      },
+      {
+        "id": "edge_23_step_simd_gates_step_telemetry",
+        "source": "step_simd_gates",
+        "target": "step_telemetry",
+        "data": {
+          "label": "gate outcome",
+          "evidence": "local_data_plane/simd_validation.py:133"
+        }
+      },
+      {
+        "id": "edge_24_step_telemetry_out_receipts",
+        "source": "step_telemetry",
+        "target": "out_receipts",
+        "data": {
+          "label": "emit receipt",
+          "evidence": "local_data_plane/telemetry.py:71"
+        }
+      },
+      {
+        "id": "edge_25_store_tuning_cache_step_autotuner",
+        "source": "store_tuning_cache",
+        "target": "step_autotuner",
+        "data": {
+          "label": "read key",
+          "evidence": "local_data_plane/kernel_dispatch.py:90"
+        }
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 0.8
+    }
+  }
+}
